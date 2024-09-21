@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Enrollment Form</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+
+<div class="container mt-5">
+    <h2>Student Enrollment Form</h2>
+    <form id="studentForm">
+        <div class="mb-3">
+            <label for="rollNo" class="form-label">Roll No.</label>
+            <input type="number" class="form-control" id="rollNo" required>
+        </div>
+        <div class="mb-3">
+            <label for="studentName" class="form-label">Student Name</label>
+            <input type="text" class="form-control" id="studentName" disabled>
+        </div>
+        <div class="mb-3">
+            <label for="studentClass" class="form-label">Class</label>
+            <input type="text" class="form-control" id="studentClass" disabled>
+        </div>
+        <div class="mb-3">
+            <label for="birthdate" class="form-label">Birthdate</label>
+            <input type="date" class="form-control" id="birthdate" disabled>
+        </div>
+        <div class="mb-3">
+            <label for="address" class="form-label">Address</label>
+            <input type="text" class="form-control" id="address" disabled>
+        </div>
+        <div class="mb-3">
+            <label for="enrollmentDate" class="form-label">Enrollment Date</label>
+            <input type="date" class="form-control" id="enrollmentDate" disabled>
+        </div>
+        <button type="button" id="saveButton" class="btn btn-primary" disabled>Save</button>
+        <button type="button" id="changeButton" class="btn btn-warning" disabled>Change</button>
+        <button type="button" id="resetButton" class="btn btn-danger" disabled>Reset</button>
+    </form>
+</div>
+
+<script>
+    // Simulated database using an object
+    let studentDatabase = {
+        1: {name: "Alice Johnson", class: "10", birthdate: "2006-08-12", address: "123 Elm St", enrollmentDate: "2023-09-01"},
+        2: {name: "Bob Smith", class: "9", birthdate: "2007-05-22", address: "456 Oak St", enrollmentDate: "2023-09-01"},
+        3: {name: "Charlie Brown", class: "8", birthdate: "2008-03-15", address: "789 Pine St", enrollmentDate: "2023-09-01"},
+        // Add more students for testing
+    };
+
+    const rollNoField = document.getElementById('rollNo');
+    const nameField = document.getElementById('studentName');
+    const classField = document.getElementById('studentClass');
+    const birthdateField = document.getElementById('birthdate');
+    const addressField = document.getElementById('address');
+    const enrollmentDateField = document.getElementById('enrollmentDate');
+
+    const saveButton = document.getElementById('saveButton');
+    const changeButton = document.getElementById('changeButton');
+    const resetButton = document.getElementById('resetButton');
+
+    rollNoField.addEventListener('input', function () {
+        const rollNo = rollNoField.value;
+
+        // Reset other fields
+        nameField.value = '';
+        classField.value = '';
+        birthdateField.value = '';
+        addressField.value = '';
+        enrollmentDateField.value = '';
+        disableAllFields();
+        disableButtons();
+
+        if (rollNo in studentDatabase) {
+            // If student exists in the database
+            populateForm(studentDatabase[rollNo]);
+            enableButtons(['changeButton', 'resetButton']);
+        } else {
+            // New student
+            enableFields();
+            enableButtons(['saveButton', 'resetButton']);
+        }
+    });
+
+    saveButton.addEventListener('click', function () {
+        const rollNo = rollNoField.value;
+        const newStudent = {
+            name: nameField.value,
+            class: classField.value,
+            birthdate: birthdateField.value,
+            address: addressField.value,
+            enrollmentDate: enrollmentDateField.value
+        };
+
+        studentDatabase[rollNo] = newStudent;
+        alert('Student Saved Successfully!');
+        resetForm();
+    });
+
+    changeButton.addEventListener('click', function () {
+        const rollNo = rollNoField.value;
+        if (rollNo in studentDatabase) {
+            studentDatabase[rollNo] = {
+                name: nameField.value,
+                class: classField.value,
+                birthdate: birthdateField.value,
+                address: addressField.value,
+                enrollmentDate: enrollmentDateField.value
+            };
+            alert('Student Data Updated Successfully!');
+            resetForm();
+        }
+    });
+
+    resetButton.addEventListener('click', function () {
+        resetForm();
+        alert('Form Reset Successfully!');
+    });
+
+    function populateForm(student) {
+        nameField.value = student.name;
+        classField.value = student.class;
+        birthdateField.value = student.birthdate;
+        addressField.value = student.address;
+        enrollmentDateField.value = student.enrollmentDate;
+    }
+
+    function enableFields() {
+        nameField.disabled = false;
+        classField.disabled = false;
+        birthdateField.disabled = false;
+        addressField.disabled = false;
+        enrollmentDateField.disabled = false;
+    }
+
+    function resetForm() {
+        rollNoField.value = '';
+        nameField.value = '';
+        classField.value = '';
+        birthdateField.value = '';
+        addressField.value = '';
+        enrollmentDateField.value = '';
+        disableAllFields();
+        disableButtons();
+    }
+
+    function disableAllFields() {
+        nameField.disabled = true;
+        classField.disabled = true;
+        birthdateField.disabled = true;
+        addressField.disabled = true;
+        enrollmentDateField.disabled = true;
+    }
+
+    function enableButtons(buttonIds) {
+        if (buttonIds.includes('saveButton')) saveButton.disabled = false;
+        if (buttonIds.includes('changeButton')) changeButton.disabled = false;
+        if (buttonIds.includes('resetButton')) resetButton.disabled = false;
+    }
+
+    function disableButtons() {
+        saveButton.disabled = true;
+        changeButton.disabled = true;
+        resetButton.disabled = true;
+    }
+
+    resetForm();  // Start with a clean form
+</script>
+
+</body>
+</html>
